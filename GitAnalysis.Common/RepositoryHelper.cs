@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using LibGit2Sharp;
 
-namespace GitAnalysis.CLI
+namespace GitAnalysis.Common
 {
     public static class RepositoryHelper
     {

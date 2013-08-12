@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitAnalysis.CLI", "GitAnalysis.CLI\GitAnalysis.CLI.csproj", "{0A32AAA6-C2AF-45EA-9E68-0C6649E87896}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitAnalysis.Common", "GitAnalysis.Common\GitAnalysis.Common.csproj", "{4C692BF2-C8D2-447F-A2AA-3440467282E9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -13,6 +15,10 @@ Global
 		{0A32AAA6-C2AF-45EA-9E68-0C6649E87896}.Debug|x86.Build.0 = Debug|x86
 		{0A32AAA6-C2AF-45EA-9E68-0C6649E87896}.Release|x86.ActiveCfg = Release|x86
 		{0A32AAA6-C2AF-45EA-9E68-0C6649E87896}.Release|x86.Build.0 = Release|x86
+		{4C692BF2-C8D2-447F-A2AA-3440467282E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4C692BF2-C8D2-447F-A2AA-3440467282E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{4C692BF2-C8D2-447F-A2AA-3440467282E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{4C692BF2-C8D2-447F-A2AA-3440467282E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = GitAnalysis.CLI\GitAnalysis.CLI.csproj

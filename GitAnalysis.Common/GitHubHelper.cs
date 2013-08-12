@@ -6,7 +6,7 @@ using System.Linq;
 using ServiceStack.Text.Json;
 using System.Collections.Generic;
 
-namespace GitAnalysis.CLI
+namespace GitAnalysis.Common
 {
     public static class GitHubHelper
     {
