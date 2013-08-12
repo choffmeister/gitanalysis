@@ -69,10 +69,13 @@ namespace GitAnalysis.CLI
 
         private static void LoadRepositories(int minForks, int count)
         {
+            int i = 0;
             IEnumerable<GitHubRepositoryInfo> repoInfos = GitHubHelper.SearchRepositories(minForks).Take(count);
 
             foreach (GitHubRepositoryInfo repoInfo in repoInfos)
             {
+                Console.WriteLine("# {0}/{1}", i++, count);
+
                 using (IRepository repo = RepositoryHelper.Open(repoInfo.UserName, repoInfo.RepositoryName))
                 {
                     GitHubHelper.SaveGitHubRepositoryInfo(repoInfo.UserName, repoInfo.RepositoryName, repoInfo);
