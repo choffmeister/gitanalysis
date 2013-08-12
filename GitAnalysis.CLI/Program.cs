@@ -28,17 +28,24 @@ namespace GitAnalysis.CLI
     {
         public static void Main(string[] args)
         {
-            LoadRepositories(100, 100);
+            int minForks = 100;
+            int count = 100;
+            LoadRepositories(minForks, count);
 
             foreach (string userPath in Directory.EnumerateDirectories("repositories", "*", SearchOption.TopDirectoryOnly))
             {
+                string userName = Path.GetFileName(userPath);
+
                 foreach (string repositoryPath in Directory.EnumerateDirectories(userPath, "*", SearchOption.TopDirectoryOnly))
                 {
+                    string repositoryName = Path.GetFileName(repositoryPath);
+
                     using (Repository repo = new Repository(repositoryPath))
                     {
+                        GitHubRepositoryInfo repoInfo = GitHubHelper.LoadGitHubRepositoryInfo(userName, repositoryName);
                         GitCommitGraph graph = new GitCommitGraph(repo);
 
-                        Console.WriteLine("{0} commits", graph.VertexCount);
+                        Console.WriteLine("{0}/{1} | {2} commits, {3} forks, {4} watchers", userName, repositoryName, graph.VertexCount, repoInfo.ForkCount, repoInfo.WatcherCount);
                     }
                 }
             }
@@ -52,6 +59,7 @@ namespace GitAnalysis.CLI
             {
                 using (IRepository repo = RepositoryHelper.Open(repoInfo.UserName, repoInfo.RepositoryName))
                 {
+                    GitHubHelper.SaveGitHubRepositoryInfo(repoInfo.UserName, repoInfo.RepositoryName, repoInfo);
                 }
             }
         }

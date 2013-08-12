@@ -19,16 +19,48 @@ using System.Net;
 using System.Collections;
 using System.IO;
 using System.Linq;
-using ServiceStack.Text.Json;
 using System.Collections.Generic;
+using ServiceStack.Text;
 
 namespace GitAnalysis.Common
 {
     public static class GitHubHelper
     {
+        public static GitHubRepositoryInfo LoadGitHubRepositoryInfo(string userName, string repositoryName)
+        {
+            string targetPath = string.Format(Path.Combine("repositories", userName, repositoryName));
+            string gitHubInfoPath = Path.Combine(targetPath, "github.json");
+
+            using (FileStream file = new FileStream(gitHubInfoPath, FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new StreamReader(file))
+                {
+                    var serializer = new JsonSerializer<GitHubRepositoryInfo>();
+
+                    return serializer.DeserializeFromReader(reader);
+                }
+            }
+        }
+
+        public static void SaveGitHubRepositoryInfo(string userName, string repositoryName, GitHubRepositoryInfo info)
+        {
+            string targetPath = string.Format(Path.Combine("repositories", userName, repositoryName));
+            string gitHubInfoPath = Path.Combine(targetPath, "github.json");
+
+            using (FileStream file = new FileStream(gitHubInfoPath, FileMode.Create, FileAccess.Write))
+            {
+                using (StreamWriter writer = new StreamWriter(file))
+                {
+                    var serializer = new JsonSerializer<GitHubRepositoryInfo>();
+
+                    serializer.SerializeToWriter(info, writer);
+                }
+            }
+        }
+
         public static IEnumerable<GitHubRepositoryInfo> SearchRepositories(int minForks = 100)
         {
-            int page = 0;
+            int page = 1;
             int pageSize = 25;
 
             while (true)
@@ -41,7 +73,8 @@ namespace GitAnalysis.Common
 
                 using (StreamReader reader = new StreamReader(req.GetResponse().GetResponseStream()))
                 {
-                    RepositorySearchResponse res = (RepositorySearchResponse)JsonReader<RepositorySearchResponse>.Parse(reader.ReadToEnd());
+                    var serializer = new JsonSerializer<RepositorySearchResponse>();
+                    var res = serializer.DeserializeFromReader(reader);
 
                     foreach (RepositorySearchItem item in res.items)
                     {
@@ -50,7 +83,11 @@ namespace GitAnalysis.Common
                         yield return new GitHubRepositoryInfo()
                         {
                             UserName = fullNameSplit[0],
-                            RepositoryName = fullNameSplit[1]
+                            RepositoryName = fullNameSplit[1],
+                            CreatedAt = DateTime.Parse(item.created_at),
+                            UpdatedAt = DateTime.Parse(item.updated_at),
+                            ForkCount = int.Parse(item.forks_count),
+                            WatcherCount = int.Parse(item.watchers_count)
                         };
                     }
 
@@ -76,6 +113,14 @@ namespace GitAnalysis.Common
         private class RepositorySearchItem
         {
             public string full_name { get; set; }
+
+            public string created_at { get; set; }
+
+            public string updated_at { get; set; }
+
+            public string forks_count { get; set; }
+
+            public string watchers_count { get; set; }
         }
     }
 
@@ -84,5 +129,13 @@ namespace GitAnalysis.Common
         public string UserName { get; set; }
 
         public string RepositoryName { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
+
+        public int ForkCount { get; set; }
+
+        public int WatcherCount { get; set; }
     }
 }
