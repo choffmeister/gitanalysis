@@ -6,7 +6,8 @@ import os
 
 dependencies = [
 	('nuget', 'nunit', 'nunit', '2.6.2'),
-	('nuget', 'libgit2sharp', 'libgit2sharp', '0.13.0.0'),
+	('nuget', 'libgit2sharp', 'libgit2sharp', '0.12.0.0'),
+	('nuget', 'servicestack-text', 'servicestack.text', '3.9.55'),
 	('nuget', 'quickgraph', 'quickgraph', '3.6.61119.7')
 ]
 
