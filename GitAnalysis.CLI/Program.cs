@@ -32,20 +32,36 @@ namespace GitAnalysis.CLI
             int count = 100;
             LoadRepositories(minForks, count);
 
-            foreach (string userPath in Directory.EnumerateDirectories("repositories", "*", SearchOption.TopDirectoryOnly))
+            using (StreamWriter output = new StreamWriter(new FileStream("result.csv", FileMode.Create, FileAccess.Write)))
             {
-                string userName = Path.GetFileName(userPath);
+                output.WriteLine("username;repositoryname;commitcount;forkcount;watchercount");
 
-                foreach (string repositoryPath in Directory.EnumerateDirectories(userPath, "*", SearchOption.TopDirectoryOnly))
+                foreach (string userPath in Directory.EnumerateDirectories("repositories", "*", SearchOption.TopDirectoryOnly))
                 {
-                    string repositoryName = Path.GetFileName(repositoryPath);
+                    string userName = Path.GetFileName(userPath);
 
-                    using (Repository repo = new Repository(repositoryPath))
+                    foreach (string repositoryPath in Directory.EnumerateDirectories(userPath, "*", SearchOption.TopDirectoryOnly))
                     {
-                        GitHubRepositoryInfo repoInfo = GitHubHelper.LoadGitHubRepositoryInfo(userName, repositoryName);
-                        GitCommitGraph graph = new GitCommitGraph(repo);
+                        string repositoryName = Path.GetFileName(repositoryPath);
 
-                        Console.WriteLine("{0}/{1} | {2} commits, {3} forks, {4} watchers", userName, repositoryName, graph.VertexCount, repoInfo.ForkCount, repoInfo.WatcherCount);
+                        using (Repository repo = new Repository(repositoryPath))
+                        {
+                            GitHubRepositoryInfo repoInfo = GitHubHelper.LoadGitHubRepositoryInfo(userName, repositoryName);
+                            GitCommitGraph graph = new GitCommitGraph(repo);
+
+                            Console.WriteLine("{0}/{1} | {2} commits, {3} forks, {4} watchers", userName, repositoryName, graph.VertexCount, repoInfo.ForkCount, repoInfo.WatcherCount);
+
+                            output.Write(userName);
+                            output.Write(";");
+                            output.Write(repositoryName);
+                            output.Write(";");
+                            output.Write(graph.VertexCount);
+                            output.Write(";");
+                            output.Write(repoInfo.ForkCount);
+                            output.Write(";");
+                            output.Write(repoInfo.WatcherCount);
+                            output.WriteLine();
+                        }
                     }
                 }
             }
