@@ -36,6 +36,9 @@
     <Reference Include="LibGit2Sharp">
       <HintPath>..\libs\libgit2sharp\lib\net35\LibGit2Sharp.dll</HintPath>
     </Reference>
+    <Reference Include="QuickGraph">
+      <HintPath>..\libs\quickgraph\lib\net4\QuickGraph.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />

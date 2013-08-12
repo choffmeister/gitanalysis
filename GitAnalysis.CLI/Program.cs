@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LibGit2Sharp;
 using GitAnalysis.Common;
+using QuickGraph;
 
 namespace GitAnalysis.CLI
 {
@@ -17,10 +18,9 @@ namespace GitAnalysis.CLI
             {
                 using (IRepository repo = RepositoryHelper.Open(repoInfo.UserName, repoInfo.RepositoryName))
                 {
-                    foreach (Commit commit in repo.Head.Commits)
-                    {
-                        //Console.WriteLine("[{0}] {1}", commit.Sha.Substring(0, 8), commit.MessageShort);
-                    }
+                    GitCommitGraph graph = new GitCommitGraph(repo);
+
+                    Console.WriteLine("{0} commits", graph.VertexCount);
                 }
             }
         }
