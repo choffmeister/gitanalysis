@@ -28,15 +28,30 @@ namespace GitAnalysis.CLI
     {
         public static void Main(string[] args)
         {
-            IEnumerable<GitHubRepositoryInfo> repoInfos = GitHubHelper.SearchRepositories(10000).Take(10);
+            LoadRepositories(100, 100);
+
+            foreach (string userPath in Directory.EnumerateDirectories("repositories", "*", SearchOption.TopDirectoryOnly))
+            {
+                foreach (string repositoryPath in Directory.EnumerateDirectories(userPath, "*", SearchOption.TopDirectoryOnly))
+                {
+                    using (Repository repo = new Repository(repositoryPath))
+                    {
+                        GitCommitGraph graph = new GitCommitGraph(repo);
+
+                        Console.WriteLine("{0} commits", graph.VertexCount);
+                    }
+                }
+            }
+        }
+
+        private static void LoadRepositories(int minForks, int count)
+        {
+            IEnumerable<GitHubRepositoryInfo> repoInfos = GitHubHelper.SearchRepositories(minForks).Take(count);
 
             foreach (GitHubRepositoryInfo repoInfo in repoInfos)
             {
                 using (IRepository repo = RepositoryHelper.Open(repoInfo.UserName, repoInfo.RepositoryName))
                 {
-                    GitCommitGraph graph = new GitCommitGraph(repo);
-
-                    Console.WriteLine("{0} commits", graph.VertexCount);
                 }
             }
         }

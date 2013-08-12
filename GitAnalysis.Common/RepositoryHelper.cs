@@ -25,7 +25,7 @@ namespace GitAnalysis.Common
         public static IRepository Open(string userName, string repositoryName)
         {
             string sourceUrl = string.Format("git://github.com/{0}/{1}", userName, repositoryName);
-            string targetPath = string.Format("repositories/{0}/{1}", userName, repositoryName);
+            string targetPath = string.Format(Path.Combine("repositories", userName, repositoryName));
 
             try
             {
