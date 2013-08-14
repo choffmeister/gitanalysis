@@ -28,6 +28,8 @@ namespace GitAnalysis.CLI
     {
         public static void Main(string[] args)
         {
+            RepositoryHelper.RepositoriesBasePath = "repositories";
+
             int minForks = 100;
             int count = 100;
             LoadRepositories(minForks, count);

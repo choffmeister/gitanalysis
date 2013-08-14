@@ -28,7 +28,7 @@ namespace GitAnalysis.Common
     {
         public static GitHubRepositoryInfo LoadGitHubRepositoryInfo(string userName, string repositoryName)
         {
-            string targetPath = string.Format(Path.Combine("repositories", userName, repositoryName));
+            string targetPath = string.Format(Path.Combine(RepositoryHelper.RepositoriesBasePath, userName, repositoryName));
             string gitHubInfoPath = Path.Combine(targetPath, "github.json");
 
             using (FileStream file = new FileStream(gitHubInfoPath, FileMode.Open, FileAccess.Read))
@@ -44,7 +44,7 @@ namespace GitAnalysis.Common
 
         public static void SaveGitHubRepositoryInfo(string userName, string repositoryName, GitHubRepositoryInfo info)
         {
-            string targetPath = string.Format(Path.Combine("repositories", userName, repositoryName));
+            string targetPath = string.Format(Path.Combine(RepositoryHelper.RepositoriesBasePath, userName, repositoryName));
             string gitHubInfoPath = Path.Combine(targetPath, "github.json");
 
             using (FileStream file = new FileStream(gitHubInfoPath, FileMode.Create, FileAccess.Write))
