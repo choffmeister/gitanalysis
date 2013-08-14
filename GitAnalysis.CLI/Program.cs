@@ -34,7 +34,7 @@ namespace GitAnalysis.CLI
 
             using (StreamWriter output = new StreamWriter(new FileStream("result.csv", FileMode.Create, FileAccess.Write)))
             {
-                output.WriteLine("username;repositoryname;commitcount;forkcount;watchercount");
+                output.WriteLine("username;repositoryname;commitcount;forkcount;watchercount;authors;authortimezones;nonmergecommitcount");
 
                 foreach (string userPath in Directory.EnumerateDirectories("repositories", "*", SearchOption.TopDirectoryOnly))
                 {
@@ -47,19 +47,41 @@ namespace GitAnalysis.CLI
                         using (Repository repo = new Repository(repositoryPath))
                         {
                             GitHubRepositoryInfo repoInfo = GitHubHelper.LoadGitHubRepositoryInfo(userName, repositoryName);
-                            GitCommitGraph graph = new GitCommitGraph(repo);
 
-                            Console.WriteLine("{0}/{1} | {2} commits, {3} forks, {4} watchers", userName, repositoryName, graph.VertexCount, repoInfo.ForkCount, repoInfo.WatcherCount);
+                            int commitCount = 0;
+                            int nonMergeCommitCount = 0;
+                            HashSet<string> authorEmails = new HashSet<string>();
+                            HashSet<int> authorTimezones = new HashSet<int>();
+
+                            foreach (Commit commit in repo.Commits)
+                            {
+                                commitCount++;
+                                if (commit.Parents.Count() <= 1)
+                                {
+                                    nonMergeCommitCount++;
+                                }
+
+                                authorEmails.Add(commit.Author.Email);
+                                authorTimezones.Add((int)Math.Round(commit.Author.When.Offset.TotalMinutes));
+                            }
+
+                            Console.WriteLine("{0}/{1} | {2} commits, {3} forks, {4} watchers, {5} authors, {6} authortimezones, {7} nonmergecommitcount", userName, repositoryName, commitCount, repoInfo.ForkCount, repoInfo.WatcherCount, authorEmails.Count, authorTimezones.Count, nonMergeCommitCount);
 
                             output.Write(userName);
                             output.Write(";");
                             output.Write(repositoryName);
                             output.Write(";");
-                            output.Write(graph.VertexCount);
+                            output.Write(commitCount);
                             output.Write(";");
                             output.Write(repoInfo.ForkCount);
                             output.Write(";");
                             output.Write(repoInfo.WatcherCount);
+                            output.Write(";");
+                            output.Write(authorEmails.Count);
+                            output.Write(";");
+                            output.Write(authorTimezones.Count);
+                            output.Write(";");
+                            output.Write(nonMergeCommitCount);
                             output.WriteLine();
                         }
                     }
